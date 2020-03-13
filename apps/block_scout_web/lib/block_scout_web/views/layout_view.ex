@@ -7,32 +7,12 @@ defmodule BlockScoutWeb.LayoutView do
   @issue_url "https://github.com/poanetwork/blockscout/issues/new"
   @default_other_networks [
     %{
-      title: "POA Core",
-      url: "https://blockscout.com/poa/core"
+      title: "Velas mainnet",
+      url: "https://explorer.velas.com"
     },
     %{
-      title: "POA Sokol",
-      url: "https://blockscout.com/poa/sokol",
-      test_net?: true
-    },
-    %{
-      title: "xDai Chain",
-      url: "https://blockscout.com/poa/dai"
-    },
-    %{
-      title: "Kovan Testnet",
-      url: "https://blockscout.com/eth/kovan",
-      test_net?: true
-    },
-    %{
-      title: "Ethereum Classic",
-      url: "https://blockscout.com/etc/mainnet",
-      other?: true
-    },
-    %{
-      title: "RSK Mainnet",
-      url: "https://blockscout.com/rsk/mainnet",
-      other?: true
+      title: "Velas testnet",
+      url: "https://testnet-v2.velas.com"
     }
   ]
 
@@ -48,11 +28,11 @@ defmodule BlockScoutWeb.LayoutView do
   end
 
   def subnetwork_title do
-    Keyword.get(application_config(), :subnetwork) || "POA Sokol"
+    Keyword.get(application_config(), :subnetwork) || "Velas"
   end
 
   def network_title do
-    Keyword.get(application_config(), :network) || "POA"
+    Keyword.get(application_config(), :network) || "Velas"
   end
 
   defp application_config do
