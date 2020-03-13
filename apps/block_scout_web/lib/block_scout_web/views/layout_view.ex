@@ -44,7 +44,7 @@ defmodule BlockScoutWeb.LayoutView do
 
   def logo_footer do
     Keyword.get(application_config(), :logo_footer) || Keyword.get(application_config(), :logo) ||
-      "/images/velas-logo-all.svg"
+      "/images/violet_grey_logo_velas.png"
   end
 
   def subnetwork_title do
