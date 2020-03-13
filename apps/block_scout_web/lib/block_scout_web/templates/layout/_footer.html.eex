@@ -8,13 +8,19 @@
         <% end %>
       </div>
     </div>
-
+    <script>
+      if (localStorage.getItem("current-color-mode") === "dark") {
+        document.getElementById("footer-logo").src = '/images/violet_logo_sign_velas.png'
+      } else {
+        document.getElementById("footer-logo").src = '/images/violet_grey_logo_velas.png'
+      }
+    </script>
     <% other_explorers = other_explorers() %>
     <% col_size = if Enum.empty?(other_explorers), do: 3, else: 2 %>
 
     <div class="row">
       <div class="col-xs-12 col-lg-3">
-        <p class="footer-info-text"><%= gettext("Blockscout is a tool for inspecting and analyzing EVM based blockchains. Blockchain explorer for Ethereum Networks.") %></p>
+        <p class="footer-info-text"></p>
         <div class="footer-social-icons">
           <a href="http://github.com/velas/" rel="noreferrer" target="_blank" class="footer-social-icon" title='<%= gettext("Github") %>'>
             <i class="fab fa-github"></i>
@@ -29,14 +35,22 @@
       </div>
 
       <div class="col-xs-12 col-md-4 col-lg-<%= col_size %> footer-list">
-        <h3>BlockScout</h3>
+        <h3>Velas</h3>
         <ul>
           <li><a href="https://github.com/velas/Velas-Blockchain/issues" rel="noreferrer" class="footer-link" target="_blank"><%= gettext("Submit an Issue") %></a></li>
-          <li><a href="https://github.com/velas/Velas-Blockchain" rel="noreferrer" class="footer-link"><%= gettext("Contribute") %></a></li>
-          <li><a href="https://t.me/VelasDevelopers" rel="noreferrer" class="footer-link"><%= gettext("Chat") %></a></li>
-          <li><a href="https://t.me/VelasDevelopers" rel="noreferrer" class="footer-link"><%= gettext("Support") %></a></li>
+          <li><a href="https://github.com/velas/Velas-Blockchain" rel="noreferrer" class="footer-link" target="_blank"><%= gettext("Contribute") %></a></li>
+          <li><a href="https://t.me/VelasDevelopers" rel="noreferrer" class="footer-link" target="_blank"><%= gettext("Chat") %></a></li>
+          <li><a href="https://t.me/VelasDevelopers" rel="noreferrer" class="footer-link" target="_blank"><%= gettext("Support") %></a></li>
         </ul>
       </div>
+      <div class="col-xs-12 col-md-4 col-lg-<%= col_size %> footer-list">
+        <h3>Other links</h3>
+        <ul>
+          <li><a href="https://velas.com/" rel="noreferrer" class="footer-link" target="_blank"><%= gettext("Velas") %></a></li>
+          <li><a href="https://wallet.velas.com" rel="noreferrer" class="footer-link"target="_blank"><%= gettext("Web wallet") %></a></li>
+        </ul>
+      </div>
+
       <% main_nets = main_nets(other_networks()) %>
 
       <%= unless Enum.empty?(main_nets) do %>
