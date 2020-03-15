@@ -132,17 +132,17 @@ defmodule Explorer.Chain.Address do
   end
 
   def checksum(hash, iodata?) do
-    checksum_formatted =
-      case Application.get_env(:explorer, :checksum_function) || :eth do
-        :eth -> eth_checksum(hash)
-        :rsk -> rsk_checksum(hash)
-      end
-
-    if iodata? do
-      ["0x" | checksum_formatted]
-    else
-      to_string(["0x" | checksum_formatted])
-    end
+    # checksum_formatted =
+    #   case Application.get_env(:explorer, :checksum_function) || :eth do
+    #     :eth -> eth_checksum(hash)
+    #     :rsk -> rsk_checksum(hash)
+    #   end
+    # if iodata? do
+      # to_string([checksum_formatted])
+    # else
+      # to_string([checksum_formatted])
+    # end
+    to_string(hash)
   end
 
   def eth_checksum(hash) do

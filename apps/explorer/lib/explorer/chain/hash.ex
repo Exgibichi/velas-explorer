@@ -5,6 +5,7 @@ defmodule Explorer.Chain.Hash do
 
   import Bitwise
   alias Poison.Encoder.BitString
+  alias Explorer.Chain.VLX, as: VLX
 
   @bits_per_byte 8
   @hexadecimal_digits_per_byte 2
@@ -154,8 +155,11 @@ defmodule Explorer.Chain.Hash do
     integer = to_integer(hash)
     hexadecimal_digit_count = byte_count_to_hexadecimal_digit_count(byte_count)
     unprefixed = :io_lib.format('~#{hexadecimal_digit_count}.16.0b', [integer])
-
-    ["0x", unprefixed]
+    if byte_count == 20 do
+      [unprefixed]
+    else
+      ["0x", unprefixed]
+    end
   end
 
   @doc """
@@ -222,13 +226,18 @@ defmodule Explorer.Chain.Hash do
 
   defimpl String.Chars do
     def to_string(hash) do
-      @for.to_string(hash)
+      string_hash = @for.to_string(hash)
+      if String.length(string_hash) == 40 do
+        VLX.eth_to_vlx(string_hash)
+      else
+        string_hash
+      end
     end
   end
 
   defimpl Poison.Encoder do
     def encode(hash, options) do
-      hash
+    hash
       |> to_string()
       |> BitString.encode(options)
     end
@@ -238,7 +247,7 @@ defmodule Explorer.Chain.Hash do
     alias Jason.Encode
 
     def encode(hash, opts) do
-      hash
+     hash
       |> to_string()
       |> Encode.string(opts)
     end

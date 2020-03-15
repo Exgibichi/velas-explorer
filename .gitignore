@@ -8,7 +8,8 @@
 /doc
 /*.ez
 /logs
-
+.elixir_ls
+.vscode
 # Generated on crash by the VM
 erl_crash.dump
 

@@ -321,12 +321,10 @@ defmodule BlockScoutWeb.AddressView do
 
   def short_hash(%Address{hash: hash}) do
     <<
-      "0x",
       short_address::binary-size(6),
       _rest::binary
     >> = to_string(hash)
-
-    "0x" <> short_address
+    short_address
   end
 
   def short_contract_name(name, max_length) do

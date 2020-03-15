@@ -48,7 +48,8 @@ defmodule Explorer.Chain do
     Token.Instance,
     TokenTransfer,
     Transaction,
-    Wei
+    Wei,
+    VLX
   }
 
   alias Explorer.Chain.Block.{EmissionReward, Reward}
@@ -2399,7 +2400,12 @@ defmodule Explorer.Chain do
   """
   @spec string_to_address_hash(String.t()) :: {:ok, Hash.Address.t()} | :error
   def string_to_address_hash(string) when is_binary(string) do
-    Hash.Address.cast(string)
+    if String.starts_with?(string, "V") do
+      eth_string = VLX.vlx_to_eth(string)
+      Hash.Address.cast(eth_string)
+    else
+      Hash.Address.cast(string)
+    end
   end
 
   @doc """
