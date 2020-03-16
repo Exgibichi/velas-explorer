@@ -21,6 +21,7 @@ defmodule Explorer.Chain.VLX do
   Decodes the given vlx address to ethereum format.
   """
   def vlx_to_eth(address) do
+    if is_hex?(address) do
       "0x" <> address |> String.downcase()
     else
       encoded_address = address |> String.trim_leading("V") |> b58_decode() |> Integer.to_string(16)
