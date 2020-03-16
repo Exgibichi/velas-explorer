@@ -31,7 +31,7 @@ defmodule Explorer.Chain.VLX do
 
   defp b58_encode(x), do: _encode(x, [])
 
-  defp b58_decode(enc), do: _decode(enc |> to_char_list, 0)
+  defp b58_decode(enc), do: _decode(enc |> to_charlist, 0)
 
   defp _encode(0, []), do: [@alphabet |> hd] |> to_string
   defp _encode(0, acc), do: acc |> to_string

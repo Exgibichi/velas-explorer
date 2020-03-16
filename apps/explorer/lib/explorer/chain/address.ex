@@ -131,7 +131,7 @@ defmodule Explorer.Chain.Address do
     checksum(hash, iodata?)
   end
 
-  def checksum(hash, iodata?) do
+  def checksum(hash, _iodata?) do
     # checksum_formatted =
     #   case Application.get_env(:explorer, :checksum_function) || :eth do
     #     :eth -> eth_checksum(hash)
