@@ -1,7 +1,7 @@
 SYSTEM = $(shell uname -s)
 HOST = host.docker.internal
-DOCKER_IMAGE = blockscout_prod
-BS_CONTAINER_NAME = blockscout
+DOCKER_IMAGE = topoyr/velas-explorer-prod
+BS_CONTAINER_NAME = velas-explorer
 PG_CONTAINER_NAME = postgres
 PG_CONTAINER_IMAGE = postgres:10.10
 THIS_FILE = $(lastword $(MAKEFILE_LIST))
