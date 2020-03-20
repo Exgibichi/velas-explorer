@@ -24,7 +24,7 @@ defmodule Explorer.Chain.VLX do
     if is_hex?(address) do
       "0x" <> address |> String.downcase()
     else
-      encoded_address = address |> String.trim_leading("V") |> b58_decode() |> Integer.to_string(16)
+      encoded_address = address |> String.trim_leading("V") |> b58_decode() |> Integer.to_string(16) |> String.pad_leading(40, "0")
       "0x" <> encoded_address |> String.downcase()
     end
   end
