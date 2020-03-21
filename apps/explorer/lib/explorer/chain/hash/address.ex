@@ -6,7 +6,7 @@ defmodule Explorer.Chain.Hash.Address do
   The address is actually the last 40 characters of the keccak-256 hash of the public key with `0x` appended.
   """
 
-  alias Explorer.Chain.Hash
+  alias Explorer.Chain.{Hash, VLX}
 
   use Ecto.Type
   @behaviour Hash
@@ -149,6 +149,14 @@ defmodule Explorer.Chain.Hash.Address do
   @impl Hash
   def byte_count, do: @byte_count
 
+  defp prepare(hash_addr) do
+      if String.starts_with?(hash_addr, "V") do
+        VLX.vlx_to_eth(hash_addr)
+      else
+        "0x" <> hash_addr
+      end
+  end
+
   @doc """
   Validates a hexadecimal encoded string to see if it conforms to an address.
 
@@ -167,7 +175,8 @@ defmodule Explorer.Chain.Hash.Address do
       {:error, :invalid_characters}
   """
   @spec validate(String.t()) :: {:ok, String.t()} | {:error, :invalid_length | :invalid_characters | :invalid_checksum}
-  def validate("0x" <> hash) do
+  def validate(hash_addr) do
+    hash = prepare(hash_addr)
     with {:length, true} <- {:length, String.length(hash) == 40},
          {:hex, true} <- {:hex, is_hex?(hash)},
          {:mixed_case, true} <- {:mixed_case, is_mixed_case?(hash)},
