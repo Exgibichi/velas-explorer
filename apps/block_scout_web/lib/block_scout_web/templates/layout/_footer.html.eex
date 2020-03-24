@@ -88,14 +88,8 @@
         </div>
       <% end %>
     </div>
-
-    <% version = version() %>
-
-    <%= unless ignore_version?(version) do %>
-      <% release_link = release_link(version) %>
       <div>
-        <%= gettext("Version") %>: <%= release_link %>
+        <%= gettext("Version") %>: v0.1
       </div>
-    <% end %>
   </div>
 </footer>
