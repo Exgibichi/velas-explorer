@@ -2401,8 +2401,11 @@ defmodule Explorer.Chain do
   @spec string_to_address_hash(String.t()) :: {:ok, Hash.Address.t()} | :error
   def string_to_address_hash(string) when is_binary(string) do
     if String.starts_with?(string, "V") do
-      eth_string = VLX.vlx_to_eth(string)
-      Hash.Address.cast(eth_string)
+      with {:ok, eth_string} <- VLX.vlx_to_eth(string) do
+        Hash.Address.cast(eth_string)
+      else
+        {:error, _} -> :error
+      end
     else
       Hash.Address.cast(string)
     end

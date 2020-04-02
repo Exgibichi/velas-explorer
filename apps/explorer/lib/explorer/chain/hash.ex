@@ -227,8 +227,11 @@ defmodule Explorer.Chain.Hash do
   defimpl String.Chars do
     def to_string(hash) do
       string_hash = @for.to_string(hash)
-      if String.length(string_hash) == 40 do
-        VLX.eth_to_vlx(string_hash)
+      if hash.byte_count() == 20 do
+        case VLX.eth_to_vlx("0x" <> string_hash) do
+          {:ok, res} -> res
+          {:error, e} -> string_hash
+        end
       else
         string_hash
       end

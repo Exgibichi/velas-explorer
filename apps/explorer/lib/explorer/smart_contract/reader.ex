@@ -61,7 +61,7 @@ defmodule Explorer.SmartContract.Reader do
   """
   @spec query_verified_contract(Hash.Address.t(), functions(), SmartContract.abi() | nil) :: functions_results()
   def query_verified_contract(address_hash, functions, mabi \\ nil) do
-    contract_address = VLX.vlx_to_eth(Hash.to_string(address_hash))
+    contract_address = VLX.vlx_to_eth!(Hash.to_string(address_hash))
 
     abi =
       case mabi do
