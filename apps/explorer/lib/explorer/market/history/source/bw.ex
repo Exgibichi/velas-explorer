@@ -41,26 +41,26 @@ defmodule Explorer.Market.History.Source.BW do
     String.downcase(Explorer.coin()) <> "_usdt"
   end
 
-  @spec market_id :: String.t()
-  defp market_id do
-    url = "#{base_url()}/exchange/config/controller/website/marketcontroller/getByWebId"
-    headers = [{"Content-Type", "application/json"}]
-    
-    {:ok, pairs} = case HTTPoison.get(url, headers) do
-      {:ok, %Response{body: body, status_code: 200}} ->
-        {:ok, Jason.decode!(body)}
+  # @spec market_id :: String.t()
+  # defp market_id do
+  #   url = "#{base_url()}/exchange/config/controller/website/marketcontroller/getByWebId"
+  #   headers = [{"Content-Type", "application/json"}]
 
-      _ ->
-        :error
-    end
+  #   {:ok, pairs} = case HTTPoison.get(url, headers) do
+  #     {:ok, %Response{body: body, status_code: 200}} ->
+  #       {:ok, Jason.decode!(body)}
 
-    pair_data =
-      Enum.find(pairs["datas"], fn item ->
-        item["name"] == trade_pair()
-      end)
+  #     _ ->
+  #       :error
+  #   end
 
-    pair_data["marketId"]
-  end
+  #   pair_data =
+  #     Enum.find(pairs["datas"], fn item ->
+  #       item["name"] == trade_pair()
+  #     end)
+
+  #   pair_data["marketId"]
+  # end
 
   @spec base_url :: String.t()
   defp base_url do
