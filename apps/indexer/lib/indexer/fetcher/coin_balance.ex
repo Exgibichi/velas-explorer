@@ -103,7 +103,7 @@ defmodule Indexer.Fetcher.CoinBalance do
 
   defp entry_to_params({address_hash_bytes, block_number}) when is_integer(block_number) do
     {:ok, address_hash} = Hash.Address.cast(address_hash_bytes)
-    %{block_quantity: integer_to_quantity(block_number), hash_data: VLX.vlx_to_eth(to_string(address_hash))}
+    %{block_quantity: integer_to_quantity(block_number), hash_data: VLX.vlx_to_eth!(to_string(address_hash))}
   end
 
   defp entry(%{address_hash: %Hash{bytes: address_hash_bytes}, block_number: block_number}) do

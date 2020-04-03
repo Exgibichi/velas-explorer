@@ -130,7 +130,7 @@ defmodule Explorer.Factory do
       |> sequence(& &1)
       |> Hash.Address.cast()
 
-    if VLX.vlx_to_eth(to_string(address_hash)) == "0x0000000000000000000000000000000000000000" do
+    if VLX.vlx_to_eth!(to_string(address_hash)) == "0x0000000000000000000000000000000000000000" do
       address_hash()
     else
       address_hash
