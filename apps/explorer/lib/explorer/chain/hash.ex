@@ -230,7 +230,7 @@ defmodule Explorer.Chain.Hash do
       if hash.byte_count() == 20 do
         case VLX.eth_to_vlx("0x" <> string_hash) do
           {:ok, res} -> res
-          {:error, e} -> string_hash
+          {:error, _e} -> string_hash
         end
       else
         string_hash
