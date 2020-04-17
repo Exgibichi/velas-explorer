@@ -2870,15 +2870,64 @@ defmodule Explorer.Chain do
     end
   end
 
+  defp contract_abi(file_name) do
+    :explorer
+    |> Application.app_dir("priv/contracts_abi/velas/#{file_name}")
+    |> File.read!()
+    |> Jason.decode!()
+  end
+
+  @system_contracts %{
+    "0x1000000000000000000000000000000000000001" => "ValidatorSetAuRa",
+    "0x2000000000000000000000000000000000000001" => "BlockRewardAuRa",
+    "0x3000000000000000000000000000000000000001" => "RandomAuRa",
+    "0x1100000000000000000000000000000000000001" => "StakingAuRa",
+    "0x4000000000000000000000000000000000000001" => "TxPermission",
+    "0x5000000000000000000000000000000000000001" => "Certifier"
+  }
+
+  def get_address_smart_contract(address) do
+    case get_system_contract(address.hash) do
+      nil -> address.smart_contract
+      contract -> contract
+    end
+  end
+
+  @spec get_system_contract(Hash.Address.t()) :: SmartContract.t() | nil
+  def get_system_contract(address_hash) do    
+    addr = "0x" <> Hash.to_string(address_hash)
+    case Map.fetch(@system_contracts, addr) do
+      {:ok, name} ->        
+        abi = contract_abi(name <> ".json")
+        %SmartContract{
+          address_hash: address_hash,
+          compiler_version: "v0.5.10+commit.5a6ea5b1",
+          name: name,
+          contract_source_code: "",
+          evm_version: "constantinopole",
+          optimization_runs: 200,
+          optimization: true,
+          abi: abi
+        }
+      _ -> nil
+    end
+  end
+
+  def is_system_contract?(address_hash), do: get_system_contract(address_hash) != nil
+
   @spec address_hash_to_smart_contract(Hash.Address.t()) :: SmartContract.t() | nil
   def address_hash_to_smart_contract(address_hash) do
-    query =
-      from(
-        smart_contract in SmartContract,
-        where: smart_contract.address_hash == ^address_hash
-      )
+    case get_system_contract(address_hash) do
+      nil -> 
+        query =
+          from(
+            smart_contract in SmartContract,
+            where: smart_contract.address_hash == ^address_hash
+          )
+        Repo.one(query)
 
-    Repo.one(query)
+      contract -> contract
+    end    
   end
 
   defp fetch_transactions(paging_options \\ nil) do
@@ -3903,7 +3952,7 @@ defmodule Explorer.Chain do
         where: smart_contract.address_hash == ^address_hash
       )
 
-    Repo.exists?(query)
+    is_system_contract?(address_hash) or Repo.exists?(query)
   end
 
   @doc """
