@@ -307,7 +307,7 @@ defmodule Explorer.SmartContract.Reader do
 
   defp new_value(output, values, index) do
     parsed = case value = Enum.at(values, index) do
-      _ when is_list(value) ->
+      [head | _] when is_integer(head) ->
         Enum.map(value, fn v ->
           " " <> Integer.to_string(v)
         end)
