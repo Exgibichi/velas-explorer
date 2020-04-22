@@ -171,6 +171,39 @@ defmodule Explorer.Chain do
     )
   end
 
+  @spec address_total_received(Hash.Address.t()) :: Explorer.Chain.Wei.t()
+  def address_total_received(address_hash) do
+    total_received =
+      fetch_transactions()
+      |> where([t], t.to_address_hash == ^address_hash)
+      |> Repo.aggregate(:sum, :value)
+      |> case do
+        nil -> %Wei{value: 0}
+        val -> val
+      end
+
+    initial_balance = case get_coin_balance(address_hash, 0) do
+      nil -> %Wei{value: 0}
+      number = %Explorer.Chain.Address.CoinBalance{} -> number.value
+    end
+
+    Wei.sum(total_received, initial_balance)
+  end
+
+  @spec address_total_sent(Hash.Address.t()) :: Explorer.Chain.Wei.t()
+  def address_total_sent(address_hash) do
+    query =
+      from t in Transaction,
+        where: t.from_address_hash == ^address_hash,
+        select: sum(t.value) + sum(t.cumulative_gas_used * t.gas_price)
+    total_sent = Repo.one(query)
+
+    case total_sent do
+      nil -> %Wei{value: 0}
+      number -> %Wei{value: number}
+    end
+  end
+
   @doc """
   `t:Explorer.Chain.InternalTransaction/0`s from the address with the given `hash`.
 
@@ -2894,10 +2927,10 @@ defmodule Explorer.Chain do
   end
 
   @spec get_system_contract(Hash.Address.t()) :: SmartContract.t() | nil
-  def get_system_contract(address_hash) do    
+  def get_system_contract(address_hash) do
     addr = "0x" <> Hash.to_string(address_hash)
     case Map.fetch(@system_contracts, addr) do
-      {:ok, name} ->        
+      {:ok, name} ->
         abi = contract_abi(name <> ".json")
         %SmartContract{
           address_hash: address_hash,
@@ -2918,7 +2951,7 @@ defmodule Explorer.Chain do
   @spec address_hash_to_smart_contract(Hash.Address.t()) :: SmartContract.t() | nil
   def address_hash_to_smart_contract(address_hash) do
     case get_system_contract(address_hash) do
-      nil -> 
+      nil ->
         query =
           from(
             smart_contract in SmartContract,
@@ -2927,7 +2960,7 @@ defmodule Explorer.Chain do
         Repo.one(query)
 
       contract -> contract
-    end    
+    end
   end
 
   defp fetch_transactions(paging_options \\ nil) do
