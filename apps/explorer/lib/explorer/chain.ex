@@ -44,6 +44,7 @@ defmodule Explorer.Chain do
     PendingBlockOperation,
     SmartContract,
     StakingPool,
+    StakingPoolsDelegator,
     Token,
     Token.Instance,
     TokenTransfer,
@@ -169,6 +170,64 @@ defmodule Explorer.Chain do
       Address.count(),
       timeout: :infinity
     )
+  end
+
+  @spec address_total_received(Hash.Address.t()) :: Explorer.Chain.Wei.t()
+  def address_total_received(address_hash) do
+    total_received =
+      fetch_transactions()
+      |> where([t], t.to_address_hash == ^address_hash)
+      |> Repo.aggregate(:sum, :value)
+      |> case do
+        nil -> %Wei{value: 0}
+        val -> val
+      end
+
+    initial_balance = case get_coin_balance(address_hash, 0) do
+      nil -> %Wei{value: 0}
+      number = %Explorer.Chain.Address.CoinBalance{} -> number.value
+    end
+
+    Wei.sum(total_received, initial_balance)
+  end
+
+  @spec address_total_sent(Hash.Address.t()) :: Explorer.Chain.Wei.t()
+  def address_total_sent(address_hash) do
+    query =
+      from t in Transaction,
+        where: t.from_address_hash == ^address_hash,
+        select: sum(t.value) + sum(t.cumulative_gas_used * t.gas_price)
+    total_sent = Repo.one(query)
+
+    case total_sent do
+      nil -> %Wei{value: 0}
+      number -> %Wei{value: number}
+    end
+  end
+
+  @spec address_staking_amount(Hash.Address.t()) :: Explorer.Chain.Wei.t()
+  def address_staking_amount(address_hash) do
+    pool_query =
+      from p in StakingPool,
+        where: p.staking_address_hash == ^address_hash,
+        select: p.self_staked_amount
+    pool_stake =
+      case Repo.one(pool_query) do
+        nil -> %Wei{value: 0}
+        number -> number
+      end
+
+    delegator_query =
+      from d in StakingPoolsDelegator,
+        where: d.delegator_address_hash == ^address_hash,
+        select: sum(d.stake_amount) - sum(d.ordered_withdraw)
+    delegator_stake =
+      case Repo.one(delegator_query) do
+        nil -> %Wei{value: 0}
+        number -> %Wei{value: number}
+      end
+
+    Wei.sum(pool_stake, delegator_stake)
   end
 
   @doc """
@@ -2401,8 +2460,11 @@ defmodule Explorer.Chain do
   @spec string_to_address_hash(String.t()) :: {:ok, Hash.Address.t()} | :error
   def string_to_address_hash(string) when is_binary(string) do
     if String.starts_with?(string, "V") do
-      eth_string = VLX.vlx_to_eth(string)
-      Hash.Address.cast(eth_string)
+      with {:ok, eth_string} <- VLX.vlx_to_eth(string) do
+        Hash.Address.cast(eth_string)
+      else
+        {:error, _} -> :error
+      end
     else
       Hash.Address.cast(string)
     end
@@ -2867,15 +2929,64 @@ defmodule Explorer.Chain do
     end
   end
 
+  defp contract_abi(file_name) do
+    :explorer
+    |> Application.app_dir("priv/contracts_abi/velas/#{file_name}")
+    |> File.read!()
+    |> Jason.decode!()
+  end
+
+  @system_contracts %{
+    "0x1000000000000000000000000000000000000001" => "ValidatorSetAuRa",
+    "0x2000000000000000000000000000000000000001" => "BlockRewardAuRa",
+    "0x3000000000000000000000000000000000000001" => "RandomAuRa",
+    "0x1100000000000000000000000000000000000001" => "StakingAuRa",
+    "0x4000000000000000000000000000000000000001" => "TxPermission",
+    "0x5000000000000000000000000000000000000001" => "Certifier"
+  }
+
+  def get_address_smart_contract(address) do
+    case get_system_contract(address.hash) do
+      nil -> address.smart_contract
+      contract -> contract
+    end
+  end
+
+  @spec get_system_contract(Hash.Address.t()) :: SmartContract.t() | nil
+  def get_system_contract(address_hash) do
+    addr = "0x" <> Hash.to_string(address_hash)
+    case Map.fetch(@system_contracts, addr) do
+      {:ok, name} ->
+        abi = contract_abi(name <> ".json")
+        %SmartContract{
+          address_hash: address_hash,
+          compiler_version: "v0.5.10+commit.5a6ea5b1",
+          name: name,
+          contract_source_code: "",
+          evm_version: "constantinopole",
+          optimization_runs: 200,
+          optimization: true,
+          abi: abi
+        }
+      _ -> nil
+    end
+  end
+
+  def is_system_contract?(address_hash), do: get_system_contract(address_hash) != nil
+
   @spec address_hash_to_smart_contract(Hash.Address.t()) :: SmartContract.t() | nil
   def address_hash_to_smart_contract(address_hash) do
-    query =
-      from(
-        smart_contract in SmartContract,
-        where: smart_contract.address_hash == ^address_hash
-      )
+    case get_system_contract(address_hash) do
+      nil ->
+        query =
+          from(
+            smart_contract in SmartContract,
+            where: smart_contract.address_hash == ^address_hash
+          )
+        Repo.one(query)
 
-    Repo.one(query)
+      contract -> contract
+    end
   end
 
   defp fetch_transactions(paging_options \\ nil) do
@@ -3900,7 +4011,7 @@ defmodule Explorer.Chain do
         where: smart_contract.address_hash == ^address_hash
       )
 
-    Repo.exists?(query)
+    is_system_contract?(address_hash) or Repo.exists?(query)
   end
 
   @doc """

@@ -56,6 +56,9 @@ defmodule Explorer.Chain.Hash do
       <<"0x", hexadecimal_digits::binary>> ->
         cast_hexadecimal_digits(hexadecimal_digits, byte_count)
 
+      <<"V", vlx_address::binary>> ->        
+        cast_vlx_address("V" <> vlx_address, byte_count)
+
       integer when is_integer(integer) ->
         cast_integer(integer, byte_count)
 
@@ -211,6 +214,14 @@ defmodule Explorer.Chain.Hash do
     end
   end
 
+  defp cast_vlx_address(address, byte_count) do
+    with {:ok, "0x" <> hex} <- VLX.vlx_to_eth(address) do
+      cast_hexadecimal_digits(hex, byte_count)
+    else
+      _ -> :error
+    end
+  end
+
   defp cast_integer(integer, byte_count) when is_integer(integer) do
     max_integer = byte_count_to_max_integer(byte_count)
 
@@ -227,8 +238,11 @@ defmodule Explorer.Chain.Hash do
   defimpl String.Chars do
     def to_string(hash) do
       string_hash = @for.to_string(hash)
-      if String.length(string_hash) == 40 do
-        VLX.eth_to_vlx(string_hash)
+      if hash.byte_count() == 20 do
+        case VLX.eth_to_vlx("0x" <> string_hash) do
+          {:ok, res} -> res
+          {:error, _e} -> string_hash
+        end
       else
         string_hash
       end

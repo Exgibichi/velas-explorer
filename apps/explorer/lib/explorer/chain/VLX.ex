@@ -1,32 +1,93 @@
 defmodule Explorer.Chain.VLX do
   @alphabet ~c(123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz)
 
-  @spec is_hex?(String.t()) :: boolean()
-  defp is_hex?(hash) do
-    case Regex.run(~r|[0-9a-f]{40}|i, hash) do
-      nil -> false
-      [_] -> true
+  def eth_to_vlx(address) do
+    try do
+      eth_to_vlx!(address)
+    rescue
+      e -> {:error, e}
+    else
+      res -> {:ok, res}
+    end
+  end
+
+  def vlx_to_eth(address) do
+    try do
+      vlx_to_eth!(address)
+    rescue
+      e -> {:error, e}
+    else
+      res -> {:ok, res}
     end
   end
 
   @doc """
   Encodes the given ethereum address to vlx format.
   """
-  def eth_to_vlx(address) do
-    encoded_address = address |> String.trim_leading("0x") |> Integer.parse(16) |> elem(0) |> b58_encode()
+  def eth_to_vlx!(address) do
+    stripped_address =
+      address
+      |> String.trim_leading("0x")
+      |> case do
+        addr when byte_size(addr) == 40 -> String.downcase addr
+        _ -> raise ArgumentError, message: "Invalid address prefix or length"
+      end
+
+    checksum =
+      stripped_address
+      |> sha256
+      |> sha256
+      |> String.slice(0, 8)
+
+    parsed_address =
+      stripped_address <> checksum
+      |> Integer.parse(16)
+
+    case parsed_address do
+      {x, ""} when is_integer(x) -> nil
+      _ -> raise ArgumentError, message: "Invalid address format"
+    end
+
+    encoded_address =
+      parsed_address
+      |> elem(0)
+      |> b58_encode()
+      |> String.pad_leading(33, "1")
+
     "V" <> encoded_address
   end
 
   @doc """
   Decodes the given vlx address to ethereum format.
   """
-  def vlx_to_eth(address) do
-    if is_hex?(address) do
-      "0x" <> address |> String.downcase()
-    else
-      encoded_address = address |> String.trim_leading("V") |> b58_decode() |> Integer.to_string(16) |> String.pad_leading(40, "0")
-      "0x" <> encoded_address |> String.downcase()
+  def vlx_to_eth!(address) do
+    decoded_address =
+      address
+      |> String.trim_leading("V")
+      |> b58_decode()
+      |> Integer.to_string(16)
+      |> String.downcase      
+      |> String.pad_leading(48, "0")
+
+    strings = Regex.run(~r/([0-9abcdef]+)([0-9abcdef]{8})$/, decoded_address)
+
+    [_, short_address, extracted_checksum] =
+      case strings do
+        list when length(list) == 3 -> list
+        _ -> raise ArgumentError, message: "Invalid address"
+      end
+
+    checksum = 
+      short_address
+      |> sha256
+      |> sha256
+      |> String.slice(0, 8)      
+
+    if extracted_checksum != checksum do
+      raise ArgumentError, message: "Invalid checksum"
     end
+
+    ("0x" <> short_address) |> String.downcase()
   end
 
   defp b58_encode(x), do: _encode(x, [])
@@ -44,5 +105,10 @@ defmodule Explorer.Chain.VLX do
 
   defp _decode([c | cs], acc) do
     _decode(cs, acc * 58 + Enum.find_index(@alphabet, &(&1 == c)))
+  end
+
+  defp sha256(x) do
+    :crypto.hash(:sha256, x) 
+    |> Base.encode16(case: :lower)
   end
 end

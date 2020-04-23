@@ -1,18 +1,50 @@
 [
   {
-    "constant": false,
-    "inputs": [],
-    "name": "newValidatorSet",
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_collectRound",
+        "type": "uint256"
+      },
+      {
+        "name": "_miningAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getCipher",
     "outputs": [
       {
         "name": "",
-        "type": "bool"
-      },
-      {
-        "name": "",
-        "type": "uint256"
+        "type": "bytes"
       }
     ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_numberHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "_cipher",
+        "type": "bytes"
+      }
+    ],
+    "name": "commitHash",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "onFinishCollectRound",
+    "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
@@ -20,7 +52,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "MAX_VALIDATORS",
+    "name": "collectRoundLength",
     "outputs": [
       {
         "name": "",
@@ -32,171 +64,309 @@
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [],
+    "name": "isInitialized",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "commitPhaseLength",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [
       {
-        "indexed": true,
-        "name": "parentHash",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "revealSkips",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "sentReveal",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_collectRound",
+        "type": "uint256"
+      },
+      {
+        "name": "_miningAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getCommitAndCipher",
+    "outputs": [
+      {
+        "name": "",
         "type": "bytes32"
       },
       {
-        "indexed": false,
-        "name": "newSet",
-        "type": "address[]"
+        "name": "",
+        "type": "bytes"
       }
     ],
-    "name": "InitiateChange",
-    "type": "event",
-    "anonymous": false
-  },
-  {
-    "inputs": [],
-    "name": "clearUnremovableValidator",
-    "type": "function",
-    "constant": false,
-    "outputs": [],
     "payable": false,
-    "stateMutability": "nonpayable"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
+    "constant": true,
     "inputs": [],
-    "name": "emitInitiateChange",
-    "type": "function",
-    "constant": false,
-    "outputs": [],
+    "name": "isCommitPhase",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "payable": false,
-    "stateMutability": "nonpayable"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
+    "constant": true,
     "inputs": [],
-    "name": "finalizeChange",
-    "type": "function",
-    "constant": false,
-    "outputs": [],
+    "name": "nextCommitPhaseStartBlock",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "payable": false,
-    "stateMutability": "nonpayable"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [],
+    "name": "currentCollectRound",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "nextCollectRoundStartBlock",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "currentSeed",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
     "inputs": [
       {
-        "name": "_blockRewardContract",
+        "name": "_number",
+        "type": "uint256"
+      }
+    ],
+    "name": "revealSecret",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_miningAddress",
         "type": "address"
       },
       {
-        "name": "_randomContract",
-        "type": "address"
-      },
+        "name": "_number",
+        "type": "uint256"
+      }
+    ],
+    "name": "revealSecretCallable",
+    "outputs": [
       {
-        "name": "_stakingContract",
-        "type": "address"
-      },
-      {
-        "name": "_initialMiningAddresses",
-        "type": "address[]"
-      },
-      {
-        "name": "_initialStakingAddresses",
-        "type": "address[]"
-      },
-      {
-        "name": "_firstValidatorIsUnremovable",
+        "name": "",
         "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_collectRound",
+        "type": "uint256"
+      },
+      {
+        "name": "_miningAddress",
+        "type": "address"
+      }
+    ],
+    "name": "isCommitted",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "isRevealPhase",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "nextRevealPhaseStartBlock",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "newCollectRoundLength",
+        "type": "uint256"
+      }
+    ],
+    "name": "changeCollectRoundLength",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_collectRoundLength",
+        "type": "uint256"
+      },
+      {
+        "name": "_validatorSet",
+        "type": "address"
       }
     ],
     "name": "initialize",
-    "type": "function",
-    "constant": false,
     "outputs": [],
     "payable": false,
-    "stateMutability": "nonpayable"
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
+    "constant": true,
     "inputs": [
       {
         "name": "_miningAddress",
         "type": "address"
       },
       {
-        "name": "_stakingAddress",
-        "type": "address"
+        "name": "_numberHash",
+        "type": "bytes32"
       }
     ],
-    "name": "setStakingAddress",
-    "type": "function",
-    "constant": false,
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_miningAddress",
-        "type": "address"
-      }
-    ],
-    "name": "banCounter",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_miningAddress",
-        "type": "address"
-      }
-    ],
-    "name": "bannedUntil",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "blockRewardContract",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "changeRequestCount",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "emitInitiateChangeCallable",
+    "name": "commitHashCallable",
     "outputs": [
       {
         "name": "",
@@ -210,11 +380,11 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "getPreviousValidators",
+    "name": "validatorSetContract",
     "outputs": [
       {
         "name": "",
-        "type": "address[]"
+        "type": "address"
       }
     ],
     "payable": false,
@@ -223,30 +393,21 @@
   },
   {
     "constant": true,
-    "inputs": [],
-    "name": "getPendingValidators",
-    "outputs": [
+    "inputs": [
       {
-        "name": "",
-        "type": "address[]"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "getQueueValidators",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address[]"
+        "name": "_collectRound",
+        "type": "uint256"
       },
       {
+        "name": "_miningAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getCommit",
+    "outputs": [
+      {
         "name": "",
-        "type": "bool"
+        "type": "bytes32"
       }
     ],
     "payable": false,
@@ -256,196 +417,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "getValidators",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address[]"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "initiateChangeAllowed",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_miningAddress",
-        "type": "address"
-      }
-    ],
-    "name": "isReportValidatorValid",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_miningAddress",
-        "type": "address"
-      }
-    ],
-    "name": "isValidator",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_miningAddress",
-        "type": "address"
-      }
-    ],
-    "name": "isValidatorOnPreviousEpoch",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_miningAddress",
-        "type": "address"
-      }
-    ],
-    "name": "isValidatorBanned",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_stakingAddress",
-        "type": "address"
-      }
-    ],
-    "name": "miningByStakingAddress",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "randomContract",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_miningAddress",
-        "type": "address"
-      }
-    ],
-    "name": "stakingByMiningAddress",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "stakingContract",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "unremovableValidator",
-    "outputs": [
-      {
-        "name": "stakingAddress",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_miningAddress",
-        "type": "address"
-      }
-    ],
-    "name": "validatorCounter",
+    "name": "currentCollectRoundStartBlock",
     "outputs": [
       {
         "name": "",
@@ -462,13 +434,17 @@
       {
         "name": "_miningAddress",
         "type": "address"
+      },
+      {
+        "name": "_number",
+        "type": "uint256"
       }
     ],
-    "name": "validatorIndex",
+    "name": "revealNumberCallable",
     "outputs": [
       {
         "name": "",
-        "type": "uint256"
+        "type": "bool"
       }
     ],
     "payable": false,
@@ -476,17 +452,17 @@
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [],
-    "name": "validatorSetApplyBlock",
-    "outputs": [
+    "constant": false,
+    "inputs": [
       {
-        "name": "",
+        "name": "_number",
         "type": "uint256"
       }
     ],
+    "name": "revealNumber",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

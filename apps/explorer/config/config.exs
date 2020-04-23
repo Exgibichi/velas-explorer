@@ -8,7 +8,7 @@ use Mix.Config
 # General application configuration
 config :explorer,
   ecto_repos: [Explorer.Repo],
-  coin: System.get_env("COIN") || "POA",
+  coin: System.get_env("COIN") || "VLX",
   token_functions_reader_max_retries: 3,
   allowed_evm_versions:
     System.get_env("ALLOWED_EVM_VERSIONS") ||
@@ -112,16 +112,12 @@ else
   config :explorer, Explorer.Validator.MetadataProcessor, enabled: false
 end
 
-config :explorer, Explorer.Staking.PoolsReader,
-  validators_contract_address: System.get_env("POS_VALIDATORS_CONTRACT"),
-  staking_contract_address: System.get_env("POS_STAKING_CONTRACT")
-
 if System.get_env("POS_STAKING_CONTRACT") do
-  config :explorer, Explorer.Staking.EpochCounter,
+  config :explorer, Explorer.Staking.ContractState,
     enabled: true,
     staking_contract_address: System.get_env("POS_STAKING_CONTRACT")
 else
-  config :explorer, Explorer.Staking.EpochCounter, enabled: false
+  config :explorer, Explorer.Staking.ContractState, enabled: false
 end
 
 case System.get_env("SUPPLY_MODULE") do

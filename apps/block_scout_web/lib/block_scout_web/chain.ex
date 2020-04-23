@@ -43,7 +43,7 @@ defmodule BlockScoutWeb.Chain do
 
   @page_size 50
   @default_paging_options %PagingOptions{page_size: @page_size + 1}
-  @address_hash_len 29
+  @address_hash_len 34
   @tx_block_hash_len 64
 
   def default_paging_options do
@@ -246,7 +246,7 @@ defmodule BlockScoutWeb.Chain do
   end
 
   defp paging_params(%CurrentTokenBalance{address_hash: address_hash, value: value}) do
-    %{"address_hash" => VLX.vlx_to_eth(to_string(address_hash)), "value" => Decimal.to_integer(value)}
+    %{"address_hash" => VLX.vlx_to_eth!(to_string(address_hash)), "value" => Decimal.to_integer(value)}
   end
 
   defp paging_params(%CoinBalance{block_number: block_number}) do

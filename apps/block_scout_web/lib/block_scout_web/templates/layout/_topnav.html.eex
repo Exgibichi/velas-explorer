@@ -70,7 +70,7 @@
               <span class="nav-link-icon">
                 <%= render BlockScoutWeb.IconsView, "_accounts_icon.html" %>
               </span>
-              <%= gettext("Accounts") %>
+              <%= gettext("Balances") %>
             <% end %>
           </li>
         <% end %>
