@@ -278,7 +278,7 @@ defmodule Explorer.SmartContract.Reader do
 
   defp new_value(%{"type" => "address[]"} = output, [values], _index) when is_list(values) do
     parsed = Enum.map(values, fn v ->
-          v 
+          v
           |> bytes_to_string
           |> VLX.eth_to_vlx
           |> case do
@@ -290,7 +290,7 @@ defmodule Explorer.SmartContract.Reader do
   end
 
   defp new_value(%{"type" => "address"} = output, [value], _index) do
-    val = case VLX.eth_to_vlx(bytes_to_string(value)) do
+    val = case VLX.eth_to_vlx(value) do
       {:ok, vlx} -> vlx
       _ -> bytes_to_string(value)
     end
