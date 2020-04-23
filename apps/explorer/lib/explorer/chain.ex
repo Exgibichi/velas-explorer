@@ -44,6 +44,7 @@ defmodule Explorer.Chain do
     PendingBlockOperation,
     SmartContract,
     StakingPool,
+    StakingPoolsDelegator,
     Token,
     Token.Instance,
     TokenTransfer,
@@ -202,6 +203,31 @@ defmodule Explorer.Chain do
       nil -> %Wei{value: 0}
       number -> %Wei{value: number}
     end
+  end
+
+  @spec address_staking_amount(Hash.Address.t()) :: Explorer.Chain.Wei.t()
+  def address_staking_amount(address_hash) do
+    pool_query =
+      from p in StakingPool,
+        where: p.staking_address_hash == ^address_hash,
+        select: p.self_staked_amount
+    pool_stake =
+      case Repo.one(pool_query) do
+        nil -> %Wei{value: 0}
+        number -> number
+      end
+
+    delegator_query =
+      from d in StakingPoolsDelegator,
+        where: d.delegator_address_hash == ^address_hash,
+        select: sum(d.stake_amount) - sum(d.ordered_withdraw)
+    delegator_stake =
+      case Repo.one(delegator_query) do
+        nil -> %Wei{value: 0}
+        number -> %Wei{value: number}
+      end
+
+    Wei.sum(pool_stake, delegator_stake)
   end
 
   @doc """
