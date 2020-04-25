@@ -8,7 +8,7 @@ defmodule BlockScoutWeb.LayoutView do
   @default_other_networks [
     %{
       title: "Velas mainnet",
-      url: "https://explorer.velas.com"
+      url: "https://mainnet-v2.velas.com"
     },
     %{
       title: "Velas testnet",

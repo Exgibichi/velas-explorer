@@ -3,11 +3,38 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_poolStakingAddress",
+        "name": "",
         "type": "address"
       },
       {
-        "name": "_delegator",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "delegatorStakeSnapshot",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
         "type": "address"
       }
     ],
@@ -23,33 +50,61 @@
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_poolStakingAddress",
-        "type": "address"
-      }
-    ],
-    "name": "stakeAmountTotalMinusOrderedWithdraw",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "constant": false,
+    "inputs": [],
+    "name": "removePools",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "constant": false,
     "inputs": [
       {
-        "name": "_erc20TokenContract",
+        "name": "_validatorSetContract",
         "type": "address"
+      },
+      {
+        "name": "_initialStakingAddresses",
+        "type": "address[]"
+      },
+      {
+        "name": "_delegatorMinStake",
+        "type": "uint256"
+      },
+      {
+        "name": "_candidateMinStake",
+        "type": "uint256"
+      },
+      {
+        "name": "_stakingEpochDuration",
+        "type": "uint256"
+      },
+      {
+        "name": "_stakingEpochStartBlock",
+        "type": "uint256"
+      },
+      {
+        "name": "_stakeWithdrawDisallowPeriod",
+        "type": "uint256"
       }
     ],
-    "name": "setErc20TokenContract",
+    "name": "initialize",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_blockNumber",
+        "type": "uint256"
+      }
+    ],
+    "name": "setStakingEpochStartBlock",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -92,6 +147,65 @@
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "rewardWasTaken",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "name": "_miningAddress",
+        "type": "address"
+      }
+    ],
+    "name": "addPool",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "isInitialized",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [
       {
@@ -107,8 +221,17 @@
   },
   {
     "constant": false,
-    "inputs": [],
-    "name": "removePool",
+    "inputs": [
+      {
+        "name": "_stakingEpochs",
+        "type": "uint256[]"
+      },
+      {
+        "name": "_poolStakingAddress",
+        "type": "address"
+      }
+    ],
+    "name": "claimReward",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -132,7 +255,7 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_poolStakingAddress",
+        "name": "",
         "type": "address"
       }
     ],
@@ -151,15 +274,29 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_poolStakingAddress",
+        "name": "",
         "type": "address"
       },
       {
-        "name": "_staker",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "stakeAmountMinusOrderedWithdraw",
+    "name": "stakeFirstEpoch",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "candidateMinStake",
     "outputs": [
       {
         "name": "",
@@ -174,7 +311,7 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_stakingAddress",
+        "name": "",
         "type": "address"
       }
     ],
@@ -228,6 +365,39 @@
   },
   {
     "constant": true,
+    "inputs": [],
+    "name": "stakingEpochStartBlock",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_poolStakingAddress",
+        "type": "address"
+      }
+    ],
+    "name": "poolDelegatorsInactive",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [
       {
         "name": "_poolStakingAddress",
@@ -266,35 +436,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "getDelegatorMinStake",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "erc20TokenContract",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "getCandidateMinStake",
+    "name": "stakingEpochEndBlock",
     "outputs": [
       {
         "name": "",
@@ -332,11 +474,11 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_poolStakingAddress",
+        "name": "",
         "type": "address"
       },
       {
-        "name": "_delegator",
+        "name": "",
         "type": "address"
       }
     ],
@@ -358,11 +500,25 @@
     "outputs": [
       {
         "name": "likelihoods",
-        "type": "int256[]"
+        "type": "uint256[]"
       },
       {
         "name": "sum",
-        "type": "int256"
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "stakeWithdrawDisallowPeriod",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
       }
     ],
     "payable": false,
@@ -381,6 +537,33 @@
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_staker",
+        "type": "address"
+      },
+      {
+        "name": "_offset",
+        "type": "uint256"
+      },
+      {
+        "name": "_length",
+        "type": "uint256"
+      }
+    ],
+    "name": "getStakerPools",
+    "outputs": [
+      {
+        "name": "result",
+        "type": "address[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -406,11 +589,11 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_poolStakingAddress",
+        "name": "",
         "type": "address"
       },
       {
-        "name": "_staker",
+        "name": "",
         "type": "address"
       }
     ],
@@ -470,15 +653,34 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_poolStakingAddress",
+        "name": "",
         "type": "address"
       },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "stakeAmount",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
       {
         "name": "_staker",
         "type": "address"
       }
     ],
-    "name": "stakeAmount",
+    "name": "getStakerPoolsLength",
     "outputs": [
       {
         "name": "",
@@ -522,15 +724,15 @@
     ],
     "name": "stake",
     "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
+    "payable": true,
+    "stateMutability": "payable",
     "type": "function"
   },
   {
     "constant": true,
     "inputs": [
       {
-        "name": "_stakingAddress",
+        "name": "",
         "type": "address"
       }
     ],
@@ -565,8 +767,17 @@
   },
   {
     "constant": true,
-    "inputs": [],
-    "name": "STAKE_UNIT",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "stakeLastEpoch",
     "outputs": [
       {
         "name": "",
@@ -607,9 +818,37 @@
   },
   {
     "constant": true,
+    "inputs": [],
+    "name": "stakingEpochDuration",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "delegatorMinStake",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [
       {
-        "name": "_poolStakingAddress",
+        "name": "",
         "type": "address"
       }
     ],
@@ -656,11 +895,11 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_poolStakingAddress",
+        "name": "",
         "type": "address"
       },
       {
-        "name": "_staker",
+        "name": "",
         "type": "address"
       }
     ],
@@ -676,24 +915,19 @@
     "type": "function"
   },
   {
-    "constant": true,
+    "constant": false,
     "inputs": [],
-    "name": "MAX_DELEGATORS_PER_POOL",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "name": "removeMyPool",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "constant": true,
     "inputs": [
       {
-        "name": "_stakingAddress",
+        "name": "",
         "type": "address"
       }
     ],
@@ -751,9 +985,23 @@
   },
   {
     "constant": true,
+    "inputs": [],
+    "name": "areStakeAndWithdrawAllowed",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [
       {
-        "name": "_stakingAddress",
+        "name": "",
         "type": "address"
       }
     ],
@@ -769,6 +1017,77 @@
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_stakingEpochs",
+        "type": "uint256[]"
+      },
+      {
+        "name": "_poolStakingAddress",
+        "type": "address"
+      },
+      {
+        "name": "_staker",
+        "type": "address"
+      }
+    ],
+    "name": "getRewardAmount",
+    "outputs": [
+      {
+        "name": "rewardSum",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "fallback"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "fromPoolStakingAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "staker",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "stakingEpoch",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "nativeCoinsAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "ClaimedReward",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "poolStakingAddress",
+        "type": "address"
+      }
+    ],
+    "name": "AddedPool",
+    "type": "event"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -792,34 +1111,7 @@
         "type": "uint256"
       }
     ],
-    "name": "Claimed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "toPoolStakingAddress",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "staker",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "stakingEpoch",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Staked",
+    "name": "ClaimedOrderedWithdrawal",
     "type": "event"
   },
   {
@@ -851,7 +1143,7 @@
         "type": "uint256"
       }
     ],
-    "name": "StakeMoved",
+    "name": "MovedStake",
     "type": "event"
   },
   {
@@ -878,7 +1170,46 @@
         "type": "int256"
       }
     ],
-    "name": "WithdrawalOrdered",
+    "name": "OrderedWithdrawal",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "toPoolStakingAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "staker",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "stakingEpoch",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "PlacedStake",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "poolStakingAddress",
+        "type": "address"
+      }
+    ],
+    "name": "RemovedPool",
     "type": "event"
   },
   {
@@ -905,147 +1236,7 @@
         "type": "uint256"
       }
     ],
-    "name": "Withdrawn",
+    "name": "WithdrewStake",
     "type": "event"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_amount",
-        "type": "uint256"
-      },
-      {
-        "name": "_miningAddress",
-        "type": "address"
-      }
-    ],
-    "name": "addPool",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_validatorSetContract",
-        "type": "address"
-      },
-      {
-        "name": "_erc20TokenContract",
-        "type": "address"
-      },
-      {
-        "name": "_initialStakingAddresses",
-        "type": "address[]"
-      },
-      {
-        "name": "_delegatorMinStake",
-        "type": "uint256"
-      },
-      {
-        "name": "_candidateMinStake",
-        "type": "uint256"
-      },
-      {
-        "name": "_stakingEpochDuration",
-        "type": "uint256"
-      },
-      {
-        "name": "_stakeWithdrawDisallowPeriod",
-        "type": "uint256"
-      }
-    ],
-    "name": "initialize",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_blockNumber",
-        "type": "uint256"
-      }
-    ],
-    "name": "setStakingEpochStartBlock",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "areStakeAndWithdrawAllowed",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "stakeWithdrawDisallowPeriod",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "stakingEpochDuration",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "stakingEpochStartBlock",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "stakingEpochEndBlock",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
   }
 ]

@@ -66,11 +66,19 @@
             </div>
           </li>
           <li class="nav-item">
-            <%= link to: address_path(@conn, :index), class: "nav-link topnav-nav-link #{tab_status("accounts", @conn.request_path)}" do %>
+            <%= link to: accounts_path(@conn, :index), class: "nav-link topnav-nav-link #{tab_status("accounts", @conn.request_path)}" do %>
               <span class="nav-link-icon">
                 <%= render BlockScoutWeb.IconsView, "_accounts_icon.html" %>
               </span>
               <%= gettext("Accounts") %>
+            <% end %>
+          </li>
+          <li class="nav-item">
+            <%= link to: address_path(@conn, :index), class: "nav-link topnav-nav-link #{tab_status("balances", @conn.request_path)}" do %>
+              <span class="nav-link-icon">
+                <%= render BlockScoutWeb.IconsView, "_apps_icon.html" %>
+              </span>
+              <%= gettext("Balances") %>
             <% end %>
           </li>
         <% end %>

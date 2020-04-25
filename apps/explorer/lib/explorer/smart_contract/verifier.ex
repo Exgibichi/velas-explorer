@@ -69,13 +69,14 @@ defmodule Explorer.SmartContract.Verifier do
   # credo:disable-for-next-line /Complexity/
   defp compare_bytecodes(
          {:ok, %{"abi" => abi, "bytecode" => bytecode}},
-         address_hash,
+         address_vlx,
          arguments_data,
          autodetect_contructor_arguments,
          contract_source_code
        ) do
     generated_bytecode = extract_bytecode(bytecode)
 
+    address_hash = Chain.VLX.vlx_to_eth!(address_vlx)
     "0x" <> blockchain_bytecode =
       address_hash
       |> Chain.smart_contract_bytecode()

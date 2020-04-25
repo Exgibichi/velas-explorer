@@ -66,7 +66,8 @@ defmodule BlockScoutWeb.WebRouter do
       )
     end
 
-    resources("/accounts", AddressController, only: [:index])
+    resources("/accounts", AccountsController, only: [:index])
+    resources("/balances", AddressController, only: [:index])
 
     resources "/address", AddressController, only: [:show] do
       resources("/transactions", AddressTransactionController, only: [:index], as: :transaction)

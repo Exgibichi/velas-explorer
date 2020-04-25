@@ -16,6 +16,15 @@
         </p>
       <% end %>
 
+      <p class="address-current-balance">
+        <span class="address-balance-text">Total received:</span>
+        <%= format_wei_value(Explorer.Chain.address_total_received(@address.hash), :ether) %>
+      </p>
+      <p class="address-current-balance">
+        <span class="address-balance-text">Total sent:</span>
+         <%= format_wei_value(Explorer.Chain.address_total_sent(@address.hash), :ether) %>
+      </p>
+
       <p
         class="address-current-balance"
         data-token-balance-dropdown
