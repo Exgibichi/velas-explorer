@@ -14,7 +14,7 @@ defmodule Explorer.ExchangeRates.Source.BW do
   @impl Source
   def format_data(json_data) do
     {:ok, prices} = get_assist_price()
-    
+
     coin = String.downcase(Explorer.coin())
     symbol_data =
           Enum.find(json_data["datas"], fn item ->
@@ -27,12 +27,17 @@ defmodule Explorer.ExchangeRates.Source.BW do
     btc_price = to_decimal(market_data["usd"]["btc"])
     current_price = to_decimal(market_data["usd"][coin])
 
-    id = symbol_data["currencyId"]    
-    btc_value = if id != "2", do: Decimal.div(current_price, btc_price), else: 1    
-    
+    id = symbol_data["currencyId"]
+    btc_value = if id != "2", do: Decimal.div(current_price, btc_price), else: 1
+
+    {:ok, supply} = get_supply()
+    current_supply = supply["circulating_supply"]
+    market_cap = Decimal.mult(current_supply, current_price)
+
     wei_supply = Explorer.Chain.fetch_sum_coin_total_supply_minus_burnt()
     available_supply = %Wei{value: wei_supply} |> Wei.to(:ether) |> Decimal.max(2_000_000_000)
-    market_cap = Decimal.mult(available_supply, current_price)
+
+    full_market_cap = Decimal.mult(available_supply, current_price)
 
     volume_24h = case get_ticker(coin) do
         {:ok, ticker} -> ticker["datas"] |> Enum.at(9)
@@ -41,7 +46,7 @@ defmodule Explorer.ExchangeRates.Source.BW do
 
     [
       %Token{
-        available_supply: available_supply,
+        available_supply: current_supply,
         total_supply: nil,
         btc_value: btc_value,
         id: json_data["id"],
@@ -60,8 +65,26 @@ defmodule Explorer.ExchangeRates.Source.BW do
     "#{base_url()}/exchange/config/controller/website/currencycontroller/getCurrencyList"
   end
 
+  defp supply_url do
+    "https://explorer.velas.com/ticker"
+  end
+
   defp base_url do
     config(:base_url) || "https://www.bw.com"
+  end
+
+  defp get_supply() do
+    url = supply_url()
+    case HTTPoison.get(url, headers()) do
+      {:ok, %Response{body: body, status_code: 200}} ->
+        {:ok, decode_json(body)}
+
+      {:ok, %Response{body: body, status_code: status_code}} when status_code in 400..499 ->
+        {:error, decode_json(body)["error"]}
+
+      {:error, %Error{reason: reason}} ->
+        {:error, reason}
+    end
   end
 
   defp get_ticker(coin) do
@@ -77,7 +100,7 @@ defmodule Explorer.ExchangeRates.Source.BW do
 
       {:error, %Error{reason: reason}} ->
         {:error, reason}
-    end 
+    end
   end
 
   defp get_assist_price do
