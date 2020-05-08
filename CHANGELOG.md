@@ -10,6 +10,7 @@
 - [#2944](https://github.com/poanetwork/blockscout/pull/2944), [#3046](https://github.com/poanetwork/blockscout/pull/3046) - Split js logic into multiple files
 
 ### Chore
+- [#3099](https://github.com/poanetwork/blockscout/pull/3099) - Remove pending txs cache
 
 
 ## 3.1.0-beta
