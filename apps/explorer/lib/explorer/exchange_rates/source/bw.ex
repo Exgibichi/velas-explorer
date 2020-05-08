@@ -46,12 +46,12 @@ defmodule Explorer.ExchangeRates.Source.BW do
 
     [
       %Token{
-        available_supply: current_supply,
+        available_supply: current_supply || available_supply,
         total_supply: nil,
         btc_value: btc_value,
         id: json_data["id"],
         last_updated: last_updated,
-        market_cap_usd: market_cap,
+        market_cap_usd: market_cap || full_market_cap,
         name: symbol_data["name"],
         symbol: String.upcase(symbol_data["name"]),
         usd_value: current_price,
