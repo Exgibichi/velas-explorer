@@ -16,13 +16,14 @@
         </p>
       <% end %>
 
+      <% {total_received, total_sent} = Explorer.Chain.address_total_received_and_sent(@address.hash) %>
       <p class="address-current-balance">
         <span class="address-balance-text">Total received:</span>
-        <%= format_wei_value(Explorer.Chain.address_total_received(@address.hash), :ether) %>
+        <%= format_wei_value(total_received, :ether) %>
       </p>
       <p class="address-current-balance">
         <span class="address-balance-text">Total sent:</span>
-         <%= format_wei_value(Explorer.Chain.address_total_sent(@address.hash), :ether) %>
+         <%= format_wei_value(total_sent, :ether) %>
       </p>
 
       <p
