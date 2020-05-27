@@ -29,7 +29,7 @@ defmodule Explorer.Chain.VLX do
       address
       |> String.trim_leading("0x")
       |> case do
-        addr when byte_size(addr) == 40 -> String.downcase addr
+        addr when byte_size(addr) == 40 -> String.downcase(addr)
         _ -> raise ArgumentError, message: "Invalid address prefix or length"
       end
 
@@ -40,7 +40,7 @@ defmodule Explorer.Chain.VLX do
       |> String.slice(0, 8)
 
     parsed_address =
-      stripped_address <> checksum
+      (stripped_address <> checksum)
       |> Integer.parse(16)
 
     case parsed_address do
@@ -66,7 +66,7 @@ defmodule Explorer.Chain.VLX do
       |> String.trim_leading("V")
       |> b58_decode()
       |> Integer.to_string(16)
-      |> String.downcase      
+      |> String.downcase()
       |> String.pad_leading(48, "0")
 
     strings = Regex.run(~r/([0-9abcdef]+)([0-9abcdef]{8})$/, decoded_address)
@@ -77,11 +77,11 @@ defmodule Explorer.Chain.VLX do
         _ -> raise ArgumentError, message: "Invalid address"
       end
 
-    checksum = 
+    checksum =
       short_address
       |> sha256
       |> sha256
-      |> String.slice(0, 8)      
+      |> String.slice(0, 8)
 
     if extracted_checksum != checksum do
       raise ArgumentError, message: "Invalid checksum"
@@ -108,7 +108,7 @@ defmodule Explorer.Chain.VLX do
   end
 
   defp sha256(x) do
-    :crypto.hash(:sha256, x) 
+    :crypto.hash(:sha256, x)
     |> Base.encode16(case: :lower)
   end
 end

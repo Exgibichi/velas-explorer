@@ -150,11 +150,11 @@ defmodule Explorer.Chain.Hash.Address do
   def byte_count, do: @byte_count
 
   defp prepare(hash_addr) do
-      case hash_addr do
-        "V" <> _ -> VLX.vlx_to_eth(hash_addr)
-        "0x" <> _ -> {:ok, hash_addr}
-        _ -> {:error, :unexpected_prefix}
-      end
+    case hash_addr do
+      "V" <> _ -> VLX.vlx_to_eth(hash_addr)
+      "0x" <> _ -> {:ok, hash_addr}
+      _ -> {:error, :unexpected_prefix}
+    end
   end
 
   @doc """
@@ -175,7 +175,8 @@ defmodule Explorer.Chain.Hash.Address do
       iex> Explorer.Chain.Hash.Address.validate("0xc1912fEE45d61C87Cc5EA59DaE31190FFFFf232H")
       {:error, :invalid_characters}
   """
-  @spec validate(String.t()) :: {:ok, String.t()} | {:error, :unexpected_prefix | :invalid_length | :invalid_characters | :invalid_checksum}
+  @spec validate(String.t()) ::
+          {:ok, String.t()} | {:error, :unexpected_prefix | :invalid_length | :invalid_characters | :invalid_checksum}
   def validate(hash_addr) do
     with {:ok, "0x" <> hash} <- prepare(hash_addr),
          {:length, true} <- {:length, String.length(hash) == 40},

@@ -62,8 +62,10 @@ defmodule BlockScoutWeb.WeiHelpers do
       cond do
         Decimal.cmp(converted_value, 1_000_000_000_000) == :gt ->
           CldrHelper.Number.to_string!(converted_value, format: "0.###E+0")
+
         Keyword.get(options, :short_format, false) ->
           CldrHelper.Number.to_string!(converted_value, format: "#,##0.############")
+
         true ->
           CldrHelper.Number.to_string!(converted_value, format: "#,##0.##################")
       end
