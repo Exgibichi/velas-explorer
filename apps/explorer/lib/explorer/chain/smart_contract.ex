@@ -301,7 +301,10 @@ defmodule Explorer.Chain.SmartContract do
         )
 
       !etherscan_index && !blockscout_index ->
-        header = if Enum.empty?(contract_lines), do: ["/**", "* Submitted for verification at blockscout.com on #{inserted_at}", "*/"], else: []
+        header =
+          if Enum.empty?(contract_lines),
+            do: ["/**", "* Submitted for verification at blockscout.com on #{inserted_at}", "*/"],
+            else: []
 
         header ++ contract_lines
 

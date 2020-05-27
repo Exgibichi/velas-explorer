@@ -77,6 +77,7 @@ defmodule Explorer.SmartContract.Verifier do
     generated_bytecode = extract_bytecode(bytecode)
 
     address_hash = Chain.VLX.vlx_to_eth!(address_vlx)
+
     "0x" <> blockchain_bytecode =
       address_hash
       |> Chain.smart_contract_bytecode()

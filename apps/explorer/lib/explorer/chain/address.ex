@@ -138,9 +138,9 @@ defmodule Explorer.Chain.Address do
     #     :rsk -> rsk_checksum(hash)
     #   end
     # if iodata? do
-      # to_string([checksum_formatted])
+    # to_string([checksum_formatted])
     # else
-      # to_string([checksum_formatted])
+    # to_string([checksum_formatted])
     # end
     to_string(hash)
   end

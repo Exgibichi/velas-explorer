@@ -56,7 +56,7 @@ defmodule Explorer.Chain.Hash do
       <<"0x", hexadecimal_digits::binary>> ->
         cast_hexadecimal_digits(hexadecimal_digits, byte_count)
 
-      <<"V", vlx_address::binary>> ->        
+      <<"V", vlx_address::binary>> ->
         cast_vlx_address("V" <> vlx_address, byte_count)
 
       integer when is_integer(integer) ->
@@ -158,6 +158,7 @@ defmodule Explorer.Chain.Hash do
     integer = to_integer(hash)
     hexadecimal_digit_count = byte_count_to_hexadecimal_digit_count(byte_count)
     unprefixed = :io_lib.format('~#{hexadecimal_digit_count}.16.0b', [integer])
+
     if byte_count == 20 do
       [unprefixed]
     else
@@ -238,6 +239,7 @@ defmodule Explorer.Chain.Hash do
   defimpl String.Chars do
     def to_string(hash) do
       string_hash = @for.to_string(hash)
+
       if hash.byte_count() == 20 do
         case VLX.eth_to_vlx("0x" <> string_hash) do
           {:ok, res} -> res
@@ -251,7 +253,7 @@ defmodule Explorer.Chain.Hash do
 
   defimpl Poison.Encoder do
     def encode(hash, options) do
-    hash
+      hash
       |> to_string()
       |> BitString.encode(options)
     end
@@ -261,7 +263,7 @@ defmodule Explorer.Chain.Hash do
     alias Jason.Encode
 
     def encode(hash, opts) do
-     hash
+      hash
       |> to_string()
       |> Encode.string(opts)
     end

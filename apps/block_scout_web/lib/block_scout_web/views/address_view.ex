@@ -339,6 +339,7 @@ defmodule BlockScoutWeb.AddressView do
       short_address::binary-size(6),
       _rest::binary
     >> = to_string(hash)
+
     short_address
   end
 
@@ -352,10 +353,17 @@ defmodule BlockScoutWeb.AddressView do
 
   def address_page_title(address) do
     cond do
-      Chain.is_system_contract?(address.hash) -> "#{Chain.get_system_contract(address.hash).name} (#{to_string(address)})"
-      smart_contract_verified?(address) -> "#{Chain.get_address_smart_contract(address).name} (#{to_string(address)})"
-      contract?(address) -> "Contract #{to_string(address)}"
-      true -> "#{to_string(address)}"
+      Chain.is_system_contract?(address.hash) ->
+        "#{Chain.get_system_contract(address.hash).name} (#{to_string(address)})"
+
+      smart_contract_verified?(address) ->
+        "#{Chain.get_address_smart_contract(address).name} (#{to_string(address)})"
+
+      contract?(address) ->
+        "Contract #{to_string(address)}"
+
+      true ->
+        "#{to_string(address)}"
     end
   end
 end

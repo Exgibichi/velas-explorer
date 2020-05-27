@@ -409,7 +409,7 @@ defmodule Explorer.Chain.Transaction do
         hash: hash
       }) do
     case Explorer.Chain.get_system_contract(address) do
-      nil -> 
+      nil ->
         candidates_query =
           from(
             contract_method in ContractMethod,
@@ -429,7 +429,8 @@ defmodule Explorer.Chain.Transaction do
 
         {:error, :contract_not_verified, candidates}
 
-      contract -> do_decoded_input_data(data, contract.abi, hash)
+      contract ->
+        do_decoded_input_data(data, contract.abi, hash)
     end
   end
 

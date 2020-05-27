@@ -78,6 +78,7 @@ defmodule Explorer.Market.History.Source.BW do
   @spec format_data(String.t()) :: [Source.record()]
   defp format_data(data) do
     json = Jason.decode!(data)
+
     for item <- json["datas"] do
       %{
         closing_price: Decimal.new(to_string(Enum.at(item, 7))),
