@@ -32,7 +32,7 @@ defmodule Explorer.ExchangeRates.Source.BW do
     btc_value = if id != "2", do: Decimal.div(current_price, btc_price), else: 1
 
     {:ok, supply} = get_supply()
-    current_supply = supply["circulating_supply"]
+    current_supply = supply["available_supply"]
     market_cap = Decimal.mult(current_supply, current_price)
 
     wei_supply = Explorer.Chain.fetch_sum_coin_total_supply_minus_burnt()
