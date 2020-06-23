@@ -171,45 +171,39 @@ defmodule Explorer.Chain do
     )
   end
 
-  @spec address_total_received(Hash.Address.t()) :: Explorer.Chain.Wei.t()
-  def address_total_received(address_hash) do
-    total_received =
-      fetch_transactions()
-      |> where([t], t.to_address_hash == ^address_hash)
-      |> Repo.aggregate(:sum, :value)
-      |> case do
-        nil -> %Wei{value: 0}
-        val -> val
-      end
+  @doc """
+  Counts total amount of received and spent coins.
 
-    initial_balance = case get_coin_balance(address_hash, 0) do
-      nil -> %Wei{value: 0}
-      number = %Explorer.Chain.Address.CoinBalance{} -> number.value
-    end
+  This function should be used with caution. For addresses with large history,
+  it may take a while to have the return back.
+  """
+  @spec address_total_received_and_sent(Hash.Address.t()) :: {Wei.t(), Wei.t()}
+  def address_total_received_and_sent(address_hash) do
+    coin_balances =
+      CoinBalance.fetch_coin_balances(address_hash, @default_paging_options)
+      |> Ecto.Query.exclude(:limit)
+      |> Repo.all()
 
-    Wei.sum(total_received, initial_balance)
-  end
+    {total_received, total_sent} =
+      coin_balances
+      |> Enum.reduce({Decimal.new(0), Decimal.new(0)}, fn b, {received_acc, sent_acc} ->
+        case Decimal.positive?(b.delta) do
+          true -> {Decimal.add(received_acc, b.delta), sent_acc}
+          false -> {received_acc, Decimal.add(sent_acc, Decimal.mult(b.delta, -1))}
+        end
+      end)
 
-  @spec address_total_sent(Hash.Address.t()) :: Explorer.Chain.Wei.t()
-  def address_total_sent(address_hash) do
-    query =
-      from t in Transaction,
-        where: t.from_address_hash == ^address_hash,
-        select: sum(t.value) + sum(t.cumulative_gas_used * t.gas_price)
-    total_sent = Repo.one(query)
-
-    case total_sent do
-      nil -> %Wei{value: 0}
-      number -> %Wei{value: number}
-    end
+    {%Wei{value: total_received}, %Wei{value: total_sent}}
   end
 
   @spec address_staking_amount(Hash.Address.t()) :: Explorer.Chain.Wei.t()
   def address_staking_amount(address_hash) do
     pool_query =
-      from p in StakingPool,
+      from(p in StakingPool,
         where: p.staking_address_hash == ^address_hash,
         select: p.self_staked_amount
+      )
+
     pool_stake =
       case Repo.one(pool_query) do
         nil -> %Wei{value: 0}
@@ -217,9 +211,11 @@ defmodule Explorer.Chain do
       end
 
     delegator_query =
-      from d in StakingPoolsDelegator,
+      from(d in StakingPoolsDelegator,
         where: d.delegator_address_hash == ^address_hash,
         select: sum(d.stake_amount) - sum(d.ordered_withdraw)
+      )
+
     delegator_stake =
       case Repo.one(delegator_query) do
         nil -> %Wei{value: 0}
@@ -2936,9 +2932,11 @@ defmodule Explorer.Chain do
   @spec get_system_contract(Hash.Address.t()) :: SmartContract.t() | nil
   def get_system_contract(address_hash) do
     addr = "0x" <> Hash.to_string(address_hash)
+
     case Map.fetch(@system_contracts, addr) do
       {:ok, name} ->
         abi = contract_abi(name <> ".json")
+
         %SmartContract{
           address_hash: address_hash,
           compiler_version: "v0.5.10+commit.5a6ea5b1",
@@ -2949,7 +2947,9 @@ defmodule Explorer.Chain do
           optimization: true,
           abi: abi
         }
-      _ -> nil
+
+      _ ->
+        nil
     end
   end
 
@@ -2964,9 +2964,11 @@ defmodule Explorer.Chain do
             smart_contract in SmartContract,
             where: smart_contract.address_hash == ^address_hash
           )
+
         Repo.one(query)
 
-      contract -> contract
+      contract ->
+        contract
     end
   end
 

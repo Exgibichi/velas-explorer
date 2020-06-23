@@ -62,6 +62,7 @@ defmodule Explorer.SmartContract.Reader do
   @spec query_verified_contract(Hash.Address.t(), functions(), SmartContract.abi() | nil) :: functions_results()
   def query_verified_contract(address_hash, functions, mabi \\ nil) do
     contract_address = "0x" <> Hash.to_string(address_hash)
+
     abi =
       case mabi do
         nil ->
@@ -242,6 +243,7 @@ defmodule Explorer.SmartContract.Reader do
 
   defp parse_item("V" <> vlx) when is_binary(vlx) and byte_size(vlx) == 33 do
     vlx_addr = "V" <> vlx
+
     case VLX.vlx_to_eth(vlx_addr) do
       {:ok, eth_addr} -> eth_addr
       _ -> parse_item(vlx_addr)
@@ -277,23 +279,27 @@ defmodule Explorer.SmartContract.Reader do
   end
 
   defp new_value(%{"type" => "address[]"} = output, [values], _index) when is_list(values) do
-    parsed = Enum.map(values, fn v ->
-          v
-          |> bytes_to_string
-          |> VLX.eth_to_vlx
-          |> case do
-            {:ok, vlx} -> vlx
-            unparsed -> unparsed
-          end
-        end)
+    parsed =
+      Enum.map(values, fn v ->
+        v
+        |> bytes_to_string
+        |> VLX.eth_to_vlx()
+        |> case do
+          {:ok, vlx} -> vlx
+          unparsed -> unparsed
+        end
+      end)
+
     Map.put_new(output, "value", parsed)
   end
 
   defp new_value(%{"type" => "address"} = output, [value], _index) do
-    val = case VLX.eth_to_vlx(value) do
-      {:ok, vlx} -> vlx
-      _ -> bytes_to_string(value)
-    end
+    val =
+      case VLX.eth_to_vlx(value) do
+        {:ok, vlx} -> vlx
+        _ -> bytes_to_string(value)
+      end
+
     Map.put_new(output, "value", val)
   end
 
@@ -306,13 +312,16 @@ defmodule Explorer.SmartContract.Reader do
   end
 
   defp new_value(output, values, index) do
-    parsed = case value = Enum.at(values, index) do
-      [head | _] when is_integer(head) ->
-        Enum.map(value, fn v ->
-          " " <> Integer.to_string(v)
-        end)
-      val -> val
-    end
+    parsed =
+      case value = Enum.at(values, index) do
+        [head | _] when is_integer(head) ->
+          Enum.map(value, fn v ->
+            " " <> Integer.to_string(v)
+          end)
+
+        val ->
+          val
+      end
 
     Map.put_new(output, "value", parsed)
   end

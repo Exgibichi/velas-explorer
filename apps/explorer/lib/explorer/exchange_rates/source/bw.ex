@@ -16,10 +16,11 @@ defmodule Explorer.ExchangeRates.Source.BW do
     {:ok, prices} = get_assist_price()
 
     coin = String.downcase(Explorer.coin())
+
     symbol_data =
-          Enum.find(json_data["datas"], fn item ->
-            item["name"] == coin
-          end)
+      Enum.find(json_data["datas"], fn item ->
+        item["name"] == coin
+      end)
 
     market_data = prices["datas"]
     {:ok, last_updated} = DateTime.from_unix(symbol_data["modifyTime"], :millisecond)
@@ -39,10 +40,11 @@ defmodule Explorer.ExchangeRates.Source.BW do
 
     full_market_cap = Decimal.mult(available_supply, current_price)
 
-    volume_24h = case get_ticker(coin) do
+    volume_24h =
+      case get_ticker(coin) do
         {:ok, ticker} -> ticker["datas"] |> Enum.at(9)
         _ -> nil
-    end
+      end
 
     [
       %Token{
@@ -55,7 +57,7 @@ defmodule Explorer.ExchangeRates.Source.BW do
         name: symbol_data["name"],
         symbol: String.upcase(symbol_data["name"]),
         usd_value: current_price,
-        volume_24h_usd: to_decimal(volume_24h),
+        volume_24h_usd: to_decimal(volume_24h)
       }
     ]
   end
@@ -75,6 +77,7 @@ defmodule Explorer.ExchangeRates.Source.BW do
 
   defp get_supply() do
     url = supply_url()
+
     case HTTPoison.get(url, headers()) do
       {:ok, %Response{body: body, status_code: 200}} ->
         {:ok, decode_json(body)}
