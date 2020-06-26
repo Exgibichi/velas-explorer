@@ -7,3 +7,5 @@ test
 .circleci
 logs
 apps/*/test
+dev
+.history
