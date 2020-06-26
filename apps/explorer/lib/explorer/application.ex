@@ -71,7 +71,7 @@ defmodule Explorer.Application do
     [
       configure(Explorer.ExchangeRates),
       configure(Explorer.ChainSpec.GenesisData),
-      configure(Explorer.KnownTokens),
+      # configure(Explorer.KnownTokens),
       configure(Explorer.Market.History.Cataloger),
       configure(Explorer.Chain.Events.Listener),
       configure(Explorer.Counters.AddressesWithBalanceCounter),
