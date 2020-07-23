@@ -14,7 +14,7 @@ defmodule Explorer.ExchangeRates.Source do
   end
 
   defp fetch_exchange_rates_request(source) do
-    case HTTPoison.get(source.source_url(), headers()) do
+    case HTTPoison.get(source.source_url(), headers(), hackney: [:insecure]) do
       {:ok, %Response{body: body, status_code: 200}} ->
         result =
           body
