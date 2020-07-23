@@ -22,7 +22,7 @@ defmodule Explorer.Market.History.Source.BW do
     url = history_url(previous_days)
     headers = [{"Content-Type", "application/json"}]
 
-    case HTTPoison.get(url, headers, hackney: [:insecure]) do
+    case HTTPoison.get(url, headers) do
       {:ok, %Response{body: body, status_code: 200}} ->
         result =
           body
